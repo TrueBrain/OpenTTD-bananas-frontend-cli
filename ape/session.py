@@ -59,11 +59,11 @@ class Session:
 
     def tus_upload(self, upload_token, fullpath, filename):
         tus = TusClient(f"{self.tus_url}/new-package/tus/")
-        tus.set_headers({"Upload-Token": upload_token})
-        tus.set_headers({"Authorization": self._headers["Authorization"]})
 
         try:
-            uploader = tus.uploader(fullpath, chunk_size=UPLOAD_CHUNK_SIZE, metadata={"filename": filename})
+            uploader = tus.uploader(
+                fullpath, chunk_size=UPLOAD_CHUNK_SIZE, metadata={"filename": filename, "upload-token": upload_token}
+            )
             uploader.upload()
         except TusCommunicationError:
             log.exception(f"Failed to upload file '{filename}'")
